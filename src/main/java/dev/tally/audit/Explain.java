@@ -230,8 +230,11 @@ public final class Explain {
     // The model ----------------------------------------------------------------------------------------------
     static List<Map<String, Object>> rewrite(Finding f, List<Map<String, Object>> sentences, Model model) throws Exception {
         Map<String, Object> payload = Map.of("finding", f.title, "verified_sentences", sentences, "facts", f.facts, "references", f.refs);
-        String system = (model.name().toLowerCase().contains("nemotron") ? "/no_think\n" : "") + PROMPT;
-        Map<String, Object> body = Map.of("model", model.name(), "temperature", 0.2, "max_tokens", 500, "messages", List.of(
+        // NVIDIA's reasoning Nemotrons think out loud unless told not to; the small Ollama ones have no such mode.
+        String name = model.name().toLowerCase();
+        String system = (name.contains("nemotron") && !name.contains("mini") ? "/no_think\n" : "") + PROMPT;
+        Map<String, Object> body = Map.of("model", model.name(), "temperature", 0.1, "max_tokens", 500,
+                "response_format", Map.of("type", "json_object"), "messages", List.of(
                 Map.of("role", "system", "content", system), Map.of("role", "user", "content", JSON.writeValueAsString(payload))));
         HttpRequest.Builder req = HttpRequest.newBuilder(URI.create(model.base() + "/chat/completions"))
                 .timeout(Duration.ofSeconds(45)).header("Content-Type", "application/json")
@@ -240,8 +243,8 @@ public final class Explain {
         HttpResponse<String> res = HTTP.send(req.build(), HttpResponse.BodyHandlers.ofString());
         if (res.statusCode() >= 300) throw new IllegalStateException("model HTTP " + res.statusCode());
         String text = JSON.readTree(res.body()).path("choices").path(0).path("message").path("content").asString("");
-        text = text.replaceAll("(?s)<think>.*?</think>", "").strip();
-        text = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
+        text = text.replaceAll("(?s)<think>.*?</think>", "").replaceAll("```(json)?", "").strip();
+        text = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1).replaceAll(",\\s*([}\\]])", "$1");
         List<Map<String, Object>> out = new ArrayList<>();
         for (JsonNode s : JSON.readTree(text).path("sentences")) {
             String t = s.path("text").asString("").strip();
@@ -261,11 +264,17 @@ public final class Explain {
         f.explanation = base;
         f.explainedBy = "verifier";
         if (model == null || f.verdict.equals("CLEAR")) return;
-        List<Map<String, Object>> candidate;
-        try {
-            candidate = rewrite(f, base, model);
-        } catch (Exception e) {
-            f.reasons.add("Model unavailable (" + e.getClass().getSimpleName() + "); showing the verifier's sentences.");
+        List<Map<String, Object>> candidate = null;
+        Exception last = null;
+        for (int attempt = 0; attempt < 2 && candidate == null; attempt++) {  // small local models sometimes break the JSON once
+            try {
+                candidate = rewrite(f, base, model);
+            } catch (Exception e) {
+                last = e;
+            }
+        }
+        if (candidate == null) {
+            f.reasons.add("The model's reply could not be read (" + last.getClass().getSimpleName() + "); showing the verifier's sentences.");
             return;
         }
         Allowed ok = allowed(f, ev);

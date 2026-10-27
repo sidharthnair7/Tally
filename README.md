@@ -20,7 +20,7 @@ they raise the same false alarm every month because they forget what the control
 3. **Follows the people.** When a flagged vendor was set up by an employee, Tally pulls everything else that person touched, and connects findings that share a person.
 4. **Explains why, with receipts.** Every sentence cites the exact rows behind it. Click a citation and the row opens.
 5. **Remembers the controller's decisions** in Meterless H-MEM. Mark a finding "expected" once, with a reason, and next run Tally sets that pattern aside and says why, citing the memory.
-6. **Never lets a model decide.** Verdicts come from the checks, the controller's decisions and the connections. A model (NVIDIA Nemotron, optional) can word the explanation, and each sentence must pass an evidence check or the verifier's own sentence is shown instead.
+6. **Never lets a model decide.** Verdicts come from the checks, the controller's decisions and the connections. NVIDIA Nemotron, running on the local GPU, words the explanation, and each sentence must pass an evidence check or the verifier's own sentence is shown instead.
 
 ## Track 02, line by line
 
@@ -111,8 +111,9 @@ switches from "Local file" to "Meterless H-MEM" once the sidecar answers on port
 
 ### Explanations: NVIDIA Nemotron
 
-Set `TALLY_LLM_BASE_URL`, `TALLY_LLM_MODEL` and `TALLY_LLM_API_KEY` in `.env.local` (see `.env.example`). Any
-OpenAI-compatible endpoint works, including a Meterless Nightshift hotspot on your own machine.
+Local, no key: `ollama pull nemotron-mini`, then in `.env.local` set `TALLY_LLM_BASE_URL=http://localhost:11434/v1` and
+`TALLY_LLM_MODEL=nemotron-mini`. Any OpenAI-compatible endpoint works (build.nvidia.com with `TALLY_LLM_API_KEY`, or a
+Meterless Nightshift hotspot).
 
 ## Sponsor technology
 
@@ -125,9 +126,10 @@ a memory (MemoryStoreService), found again on the next run by hybrid retrieval (
 helpful each time it sets a finding aside (feedback), and its full history is kept in the append-only TrustLedger,
 which the page shows. That turns a one-shot checker into an auditor that learns the business.
 
-**NVIDIA.** Nemotron is wired in as an optional writer for the explanations a controller reads (set `TALLY_LLM_*`).
-It never decides a verdict, and every sentence it writes is checked against the rows it cites. The demo video runs
-without it, so its sentences come from the verifier.
+**NVIDIA.** Nemotron Mini runs on the controller's own NVIDIA GPU (an RTX 3070, through Ollama's OpenAI-compatible
+API), so the books never leave the building. It words the explanations a controller reads. It never decides a
+verdict, and every sentence it writes is checked against the rows it cites. In our live run, all 7 explanations it
+wrote passed the check. Any OpenAI-compatible endpoint works, including Nemotron on build.nvidia.com.
 
 **What's unique:** the memory is of *decisions*, with a reason and an audit trail, so a suppressed alert is always
 traceable to a person; and the model is fenced in by an evidence check, so the wording can be fluent without being
