@@ -4,7 +4,7 @@
 
 Open Agent Hackathon 2026 · Track 02: The Agent That Can Explain Why
 
-Demo video: _link coming_ · Live demo: _link coming_
+Demo video: `Tally-demo.mp4` on the submission page
 
 ## The problem
 
@@ -20,7 +20,7 @@ they raise the same false alarm every month because they forget what the control
 3. **Follows the people.** When a flagged vendor was set up by an employee, Tally pulls everything else that person touched, and connects findings that share a person.
 4. **Explains why, with receipts.** Every sentence cites the exact rows behind it. Click a citation and the row opens.
 5. **Remembers the controller's decisions** in Meterless H-MEM. Mark a finding "expected" once, with a reason, and next run Tally sets that pattern aside and says why, citing the memory.
-6. **Never lets a model decide.** Verdicts come from the checks, the controller's decisions and the connections. A model (NVIDIA Nemotron) only words the explanation, and each sentence must pass an evidence check or the verifier's own sentence is shown instead.
+6. **Never lets a model decide.** Verdicts come from the checks, the controller's decisions and the connections. A model (NVIDIA Nemotron, optional) can word the explanation, and each sentence must pass an evidence check or the verifier's own sentence is shown instead.
 
 ## Track 02, line by line
 
@@ -74,6 +74,7 @@ Java 25 and Spring Boot 4. All code is in `src/main/java/dev/tally/`:
 On the synthetic books in `data/` (fixed seed), offline mode, `./mvnw test`:
 
 - **Run 1:** 6 of 6 planted frauds found, 0 other false alarms across 2,709 records. The split-shipment look-alike is flagged (it looks exactly like a duplicate). The disclosed conflict of interest is cleared by the vendor master's own record. $156,640.00 at risk. 32 SQL statements.
+- **Live on Zetaris** (local platform, Lightning JDBC): the same results, 32 federated statements over the four datasources in about 9 seconds.
 - **Run 2,** after the controller marks the split shipment expected: it is set aside with the controller's reason and the memory id; all 6 frauds are still flagged; $152,440.00 at risk.
 - The tests also prove the claim check rejects an invented amount, an invented person, a reworded wrong date and a citation from another finding.
 
@@ -104,8 +105,8 @@ switches from "Local file" to "Meterless H-MEM" once the sidecar answers on port
 
 1. Install Zetaris locally (Zetaris Cloud, Run locally) and sign in.
 2. Load the four systems into four Postgres databases: `python zetaris/load_postgres.py --container <postgres container> --user <user>`
-3. Run the statements in `zetaris/register.sql` in the Zetaris SQL Editor (fill in the Postgres user and password) to register the four datasources.
-4. Copy `.env.example` to `.env.local` and fill in the Zetaris values.
+3. Copy `.env.example` to `.env.local` and fill in the Zetaris JDBC values (`ZETARIS_JDBC_JAR` pointing at the bundle's `jdbc/` jar, username, password) and the Postgres ones (`PG_HOST=postgres`, `PG_USER`, `PG_PASSWORD`).
+4. Register the four datasources: run `dev.tally.data.RegisterZetaris` (or paste `zetaris/register.sql` into the Zetaris SQL Editor).
 5. Set `TALLY_BACKEND=zetaris` and restart. The Data badge shows "Zetaris · live".
 
 ### Explanations: NVIDIA Nemotron
@@ -124,8 +125,9 @@ a memory (MemoryStoreService), found again on the next run by hybrid retrieval (
 helpful each time it sets a finding aside (feedback), and its full history is kept in the append-only TrustLedger,
 which the page shows. That turns a one-shot checker into an auditor that learns the business.
 
-**NVIDIA.** Nemotron words the explanations a controller reads. It never decides a verdict, and every sentence it
-writes is checked against the rows it cites.
+**NVIDIA.** Nemotron is wired in as an optional writer for the explanations a controller reads (set `TALLY_LLM_*`).
+It never decides a verdict, and every sentence it writes is checked against the rows it cites. The demo video runs
+without it, so its sentences come from the verifier.
 
 **What's unique:** the memory is of *decisions*, with a reason and an audit trail, so a suppressed alert is always
 traceable to a person; and the model is fenced in by an evidence check, so the wording can be fluent without being

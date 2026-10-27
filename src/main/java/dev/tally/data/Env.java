@@ -46,7 +46,7 @@ public class Env {
 
     /** Live Zetaris when TALLY_BACKEND=zetaris (or a Zetaris key is set), otherwise offline. */
     public Backend openBackend(Path root) {
-        String want = get("TALLY_BACKEND", get("ZETARIS_API_KEY") != null ? "zetaris" : "offline");
+        String want = get("TALLY_BACKEND", get("ZETARIS_API_KEY") != null || get("ZETARIS_JDBC_JAR") != null ? "zetaris" : "offline");
         return want.equals("zetaris") ? new ZetarisBackend(this) : new H2Backend(root.resolve("data").resolve("sources"));
     }
 }
