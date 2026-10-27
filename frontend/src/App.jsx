@@ -7,7 +7,6 @@ import AnimatedContent from './components/AnimatedContent.jsx';
 import GradientText from './components/GradientText.jsx';
 import ScrollReveal from './components/ScrollReveal.jsx';
 import SpotlightCard from './components/SpotlightCard.jsx';
-import DecryptedText from './components/DecryptedText.jsx';
 import CountUp from './components/CountUp.jsx';
 import { asciiPalette, useHue } from './rainbow.js';
 import { isLite, useLite } from './quality.js';
@@ -370,15 +369,7 @@ export default function App() {
             </span>
           </h1>
           <p className="lede">
-            <DecryptedText
-              text="Tally finds it, shows you the rows that prove it, and remembers what you cleared last time."
-              animateOn="view"
-              sequential
-              speed={22}
-              revealDirection="start"
-              characters="0123456789$.,#@%+=x"
-              encryptedClassName="lede-scramble"
-            />
+            Tally finds it, shows you the rows that prove it, and remembers what you cleared last time.
           </p>
           <div className="ctas">
             <a href="/workspace" className="btn btn-glow">
