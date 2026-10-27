@@ -1,0 +1,24 @@
+# secrets and local settings
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+target/
+*.pyc
+.pytest_cache/
+.venv/
+
+# Tally's local state
+data/.memory.json
+
+# memory sidecar (Meterless H-MEM is vendored by `npm run setup`)
+memory/node_modules/
+memory/vendor/
+memory/.state/
+
+# editors
+.idea/
+.vscode/
+landing/node_modules/

@@ -1,0 +1,11 @@
+.git
+.idea
+.env.local
+.env.*
+!.env.example
+**/__pycache__
+.pytest_cache
+data/.memory.json
+memory/node_modules
+memory/vendor
+memory/.state

@@ -1,0 +1,15 @@
+{
+  "name": "tally-memory",
+  "version": "0.1.0",
+  "description": "Tally's memory sidecar: the controller's decisions, kept in Meterless H-MEM.",
+  "private": true,
+  "license": "Apache-2.0",
+  "type": "module",
+  "scripts": {
+    "setup": "npx --yes degit meterless/meterless/engines/hmem/reference vendor/hmem && cd vendor/hmem && npm install --no-audit --no-fund",
+    "start": "tsx server.ts"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0"
+  }
+}

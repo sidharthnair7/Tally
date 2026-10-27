@@ -1,0 +1,65 @@
+{
+  "company": "Brightwater Components Inc.",
+  "period": "2026-07-01 to 2026-09-30",
+  "frauds": [
+    {
+      "detector": "D1",
+      "vendor_id": "V-2001",
+      "amount": 18450.0,
+      "payment_ids": [
+        "PAY-300112",
+        "PAY-300183"
+      ]
+    },
+    {
+      "detector": "D2",
+      "vendor_id": "V-2044",
+      "employee_id": "E-1007",
+      "amount": 47800.0
+    },
+    {
+      "detector": "D3",
+      "vendor_id": "V-2013",
+      "employee_id": "E-1012",
+      "amount": 29350.0
+    },
+    {
+      "detector": "D4",
+      "txn_id": "TXN-500389",
+      "amount": 12600.0
+    },
+    {
+      "detector": "D5",
+      "vendor_id": "V-2045",
+      "employee_id": "E-1007",
+      "amount": 38000.0
+    },
+    {
+      "detector": "D6",
+      "vendor_id": "V-2031",
+      "employee_id": "E-1019",
+      "amount": 6240.0
+    }
+  ],
+  "decoys": [
+    {
+      "detector": "D1",
+      "vendor_id": "V-2026",
+      "amount": 4200.0,
+      "expected": "flagged on the first run; once the controller marks it expected, remembered and suppressed"
+    },
+    {
+      "detector": "D2",
+      "vendor_id": "V-2038",
+      "employee_id": "E-1023",
+      "expected": "cleared by the vendor master's disclosed, Controller-approved conflict of interest"
+    }
+  ],
+  "connected": {
+    "employee_id": "E-1007",
+    "vendor_ids": [
+      "V-2044",
+      "V-2045"
+    ]
+  }
+}

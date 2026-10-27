@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tally</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%237c9cff'/%3E%3Cpath d='M9 9h14M16 9v15' stroke='%230b0d12' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="/" style="color:inherit;text-decoration:none">
+      <span class="logo">T</span>
+      <div>
+        <div class="name">Tally</div>
+        <div class="tag">Tally knows what you cleared last time</div>
+      </div>
+    </a>
+    <div class="company" id="company">Brightwater Components Inc. · Q3 2026 books</div>
+    <div class="badges">
+      <span class="badge" title="Where the books are read"><i>Data</i><b id="b-data">…</b></span>
+      <span class="badge" title="Where the controller's decisions are kept"><i>Memory</i><b id="b-mem">…</b></span>
+      <span class="badge" title="Who words the explanations"><i>Model</i><b id="b-model">…</b></span>
+    </div>
+  </header>
+
+  <section class="sources" id="sources"></section>
+
+  <main class="grid">
+    <aside class="trace">
+      <div class="trace-head">
+        <button id="run" class="primary">Run audit</button>
+        <div class="trace-note">Every step, every query, as it happens.</div>
+      </div>
+      <ol id="steps"></ol>
+    </aside>
+
+    <section class="results">
+      <div id="empty" class="empty">
+        <h2>Find the money that shouldn't have left.</h2>
+        <p>Tally reads your ERP, vendor master, HR system and bank feed where they live, checks every transaction
+          against your own approval policy, and shows the rows behind every finding.</p>
+        <p class="muted">Press <b>Run audit</b>.</p>
+      </div>
+
+      <div id="headline" class="headline hidden">
+        <div class="risk"><span id="h-risk">$0</span><small>at risk</small></div>
+        <div class="stats" id="h-stats"></div>
+        <div class="sub" id="h-sub"></div>
+        <div class="actions">
+          <a id="memo" class="ghost" href="/api/memo" target="_blank">Draft memo to the CFO</a>
+        </div>
+      </div>
+
+      <div id="toast" class="toast hidden"></div>
+      <div id="links"></div>
+      <div id="findings"></div>
+      <details id="setaside" class="setaside hidden"><summary id="setaside-sum"></summary><div id="setaside-list"></div></details>
+
+      <section id="memory" class="memory hidden">
+        <h3>What Tally remembers <span id="mem-kind" class="muted"></span></h3>
+        <div id="mem-list"></div>
+      </section>
+    </section>
+  </main>
+
+  <div id="drawer" class="drawer hidden" role="dialog" aria-label="Evidence row">
+    <div class="drawer-head"><div><div class="muted" id="d-src"></div><div id="d-title" class="d-title"></div></div>
+      <button id="d-close" class="ghost">Close</button></div>
+    <table id="d-table"></table>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>

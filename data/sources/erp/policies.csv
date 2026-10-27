@@ -1,0 +1,5 @@
+policy,value,description
+ap_approval_limit,10000,Invoices at or above this need the Controller
+cfo_approval_limit,25000,Invoices at or above this need the CFO
+new_vendor_days,30,A vendor younger than this is new
+duplicate_window_days,14,Two equal payments to one vendor within this many days are a possible duplicate
